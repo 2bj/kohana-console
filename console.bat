@@ -1,0 +1,1 @@
+php.exe ../../index.php --uri="console"

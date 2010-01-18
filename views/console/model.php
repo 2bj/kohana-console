@@ -2,7 +2,11 @@
 <?="<?php defined('SYSPATH') OR die('No direct access allowed.');";?> 
 
 class Model_<?=utf8::ucfirst(inflector::singular($table))?> extends Sprig {
-	
+
+	protected $_db = '<?=$group?>';
+
+	protected $_table = '<?=$table?>';
+
 	public function _init()
 	{
 		$this->_fields += array(

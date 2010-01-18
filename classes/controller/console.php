@@ -4,13 +4,14 @@ class Controller_Console extends Controller {
 	
 	public function action_index()
 	{
+		// is cli?
 		if (Request::$protocol !== 'cli')
 			die('Enabled only in cli mode!');
-		
+
 		ob_end_clean();
-		
+
+		// print available commands
 		$commands = Console::get_commands();
-		
 		$count = 1;
 		echo "Available commands:\n";
 		foreach ($commands as $c)

@@ -20,7 +20,7 @@ class Command_Module extends Command {
 	{
 		return <<<EOD
 Simply create module(just created directory classes in module)
-usage <module_name>
+usage: module <module_name>
 
 EOD;
 	}

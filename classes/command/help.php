@@ -12,11 +12,17 @@ class Command_Help extends Command {
 	
 	public function get_help()
 	{
-		return <<<EOD
-Available commands
--model
--controller
+		$result = <<<EOD
+usage: help <command>
 
+Available commands:
 EOD;
+		$commands = Console::get_commands();
+
+		$count = 1;
+		foreach ($commands as $c)
+			$result .= $count++.'. '.$c."\n";
+
+		return $result;
 	}
 }

@@ -16,6 +16,7 @@ class Command_Model extends Command {
 			'columns' => $columns,
 			'options' => $options,
 			'table' => $table,
+			'group' => $group,
 		);
 		
 //		return Kohana::debug(Database::instance()->list_columns($table));
@@ -44,9 +45,10 @@ class Command_Model extends Command {
 	{
 		return <<<EOD
 Create sprig model for table.
-Usage: model <table_name> [-m <module_name>]
+Usage: model <table_name> [-m <module_name>] [-g <database_group>]
 
 -m <module_name> - create file in the input module
+-g <database_group> - use group to connect to database
 
 EOD;
 	}
