@@ -16,6 +16,7 @@ class Command_Help extends Command {
 usage: help <command>
 
 Available commands:
+
 EOD;
 		$commands = Console::get_commands();
 
