@@ -3,14 +3,17 @@
 abstract class Command {
 	
 	/*
-	 * run the command.
-	 * @param params - array of the params
-	 * @return message to show in console
+	 * Run the command.
+	 *
+	 * @param 	array	params - array of the params
+	 * @return 	string	message to show in console
 	*/
 	abstract public function run($params);
 	
 	/*
-	 * get help for the command
+	 * Get help for the command
+	 *
+	 * @return	string	return help message about command
 	*/
 	public function get_help()
 	{

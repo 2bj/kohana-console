@@ -5,6 +5,13 @@
  */
 class Column_Mysql {
 	
+	/**
+	 * Analyze table and guess type of column (Auto, Email, Enum etc)
+	 * 
+	 * @table	string	table in the database
+	 * @group	string	group for connection to database
+	 * @return  array	with some information than Database->list_columns()
+	 */
 	function get_columns($table, $group = 'default')
 	{
 		$db = Database::instance($group);
@@ -86,6 +93,20 @@ class Column_Mysql {
 		return $columns;
 	}
 
+	/**
+	 * Get Foreigns keys for the table
+	 *
+	 * @table	string	table in the database
+	 * @group	string	group for connection to database
+	 * @return  array	foreigns keys, for example:
+	 * array(
+	 * 		'user_id'=>
+	 * 			array(
+	 * 				'table'=>'users',
+	 * 				'column'=>'id'
+	 * 			)
+	 * 		);
+	 */
 	protected function get_foreigns($table, $group = 'default')
 	{
 		$row = Database::instance($group)->query(Database::SELECT, 'SHOW CREATE TABLE '.$table, FALSE);
@@ -116,6 +137,13 @@ class Column_Mysql {
 		return $foreigns;
 	}
 	
+	/**
+	 * Get Unique keys for the table
+	 *
+	 * @table	string	table in the database
+	 * @group	string	group for connection to database
+	 * @return  array	unique keys
+	 */
 	protected function get_uniques($table, $group = 'default')
 	{
 		$row = Database::instance($group)->query(Database::SELECT, 'SHOW INDEX FROM '.$table, FALSE);

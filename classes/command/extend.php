@@ -50,6 +50,7 @@ EOD
 	{
 		return <<<EOD
 extend class:
+
 usage: extend <class> [-d <directory>]
 
 EOD;

@@ -19,7 +19,6 @@ class Command_Model extends Command {
 			'group' => $group,
 		);
 		
-//		return Kohana::debug(Database::instance()->list_columns($table));
 		$model_text = View::factory('console/model', $data)->render();
 		
 		if (isset($options['-m']))
