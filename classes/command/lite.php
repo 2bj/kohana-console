@@ -7,12 +7,17 @@ class Command_Lite extends Command {
 	
 	public function run($options)
 	{
+		$prefix = arr::get($options, '-p', 'old');
+		
+		$index = DOCROOT.'index.php';
+		$index_old = DOCROOT.'index_'.$prefix.'.php';
+		
 		if (isset($options['-r']))
 		{
-			if (file_exists(DOCROOT.'index_old.php'))
+			if (file_exists($index_old))
 			{
-				@copy(DOCROOT.'index_old.php', DOCROOT.'index.php');
-				@unlink(DOCROOT.'index_old.php');
+				@copy($index_old, $index);
+				@unlink($index_old);
 				
 				return 'index.php has been reverted';
 			}
@@ -25,6 +30,7 @@ class Command_Lite extends Command {
 				'controller_template',
 				'form',
 				'html',
+				'url',
 				'inflector',
 				'model',
 				'profiler',
@@ -32,23 +38,39 @@ class Command_Lite extends Command {
 				'route',
 				'utf8',
 				'view',
-				'config',
+				'i18n',
+				'kohana_log',
+				'kohana_config',
+				'kohana_config_file',
+				'kohana_config_reader',
 				'db',
 				'database',
 				'kohana_log_file',
 			);
 			
-			$content = file_get_contents(DOCROOT.'index.php').'?>';
+			if (file_exists($index_old))
+				$content = file_get_contents($index_old).'?>';
+			else
+				$content = file_get_contents($index).'?>';
 			
 			foreach ($classes as $class)
 				$content .= $this->get_class($class);
 			
-			if ( ! file_exists(DOCROOT.'index_old.php'))
-				@copy(DOCROOT.'index.php', DOCROOT.'index_old.php');
+			if ( ! file_exists($index_old))
+				@copy($index, $index_old);
 			
-			file_put_contents (DOCROOT.'index.php', $content);
+			file_put_contents ($index, $content);
 			
-			return 'success';
+			$message = "success\n";
+			
+			if ( ! empty($this->_errors))
+			{
+				$message .= "\nClasses that do not find:\n";
+				foreach ($this->_errors as $class)
+					$message .= "$class\n";
+			}
+			
+			return $message;
 		}
 	}
 	
