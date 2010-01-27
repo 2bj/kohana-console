@@ -43,7 +43,7 @@ class Controller_Console extends Controller {
 			if ($command_name == 'exit')
 				break;
 			
-			echo Console::run_command($command_name, $params, empty($params) ? 'get_help' : 'run');
+			echo Console::run_command($command_name, $params, 'run');
 		}
 	}
 }
