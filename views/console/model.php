@@ -11,7 +11,7 @@ class Model_<?=utf8::ucfirst(inflector::singular($table))?> extends Sprig {
 	{
 		$this->_fields += array(
 <?php foreach ($columns as $name=>$info):?>
-			'<?=$name?>' => Sprig_Field_<?=$info['type']?>(array(
+			'<?=$name?>' => new Sprig_Field_<?=$info['type']?>(array(
 <?php foreach ($info['params'] as $key=>$value):?>
 <?php if (is_string($value)):?>
 				'<?=$key?>' => '<?=$value?>',
