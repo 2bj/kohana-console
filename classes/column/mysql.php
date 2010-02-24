@@ -26,6 +26,7 @@ class Column_Mysql {
 			$type = '';
 			$params['empty'] = $data['is_nullable'];
 			$params['description'] = $data['comment'];
+			$params['label'] = '';
 			
 			// is unique key
 			foreach ($uniques as $keys)
@@ -48,6 +49,7 @@ class Column_Mysql {
 						$type = 'Belongsto';
 						$params['model'] = inflector::singular($foreigns[$name]['table']);
 						$params['column'] = $name;
+						$name = $params['model'];
 					} else if ( ! empty($data['choices'])) {
 						$type = 'Enum';
 						$params['choices'] = $data['choices'];
