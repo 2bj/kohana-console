@@ -1,1 +1,1 @@
-php.exe ../../index.php --uri="console"
+php.exe ../../index.php --uri="console/index"
