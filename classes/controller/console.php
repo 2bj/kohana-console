@@ -7,16 +7,16 @@ class Controller_Console extends Controller {
 		// is cli?
 		if (Request::$protocol !== 'cli')
 			die('Enabled only in cli mode!');
-
+		
 		ob_end_clean();
-
+		
 		// print available commands
 		$commands = Console::get_commands();
 		$count = 1;
-		echo "Available commands:\n";
+		echo __('Available commands:')."\n";
 		foreach ($commands as $c)
 			echo $count++.'. '.$c."\n";
-		echo "For more information type help <command> or exit for quit console.";
+		echo __('For more information type help <command> or exit for quit console.');
 		
 		while (TRUE)
 		{
