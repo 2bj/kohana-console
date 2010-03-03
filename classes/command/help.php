@@ -1,18 +1,19 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Command_Help extends Command {
-	
+
+	public $command = '';
+
 	public function run()
 	{
-		if (empty($this->_params))
+		$this->command OR $this->command = array_shift($this->_params);
+
+		if (empty($this->command))
 			return $this->help();
-		
-		$command_name = trim(array_shift($this->_params));
-		$result = $this->console->command($command_name)->help();
-		
-		return $result;
+
+		return $this->console->command($this->command)->help();
 	}
-	
+
 	public function help()
 	{
 		// print available commands
@@ -22,7 +23,7 @@ class Command_Help extends Command {
 		foreach ($commands as $c)
 			$res .= $count++.'. '.$c.LINE_RETURN;
 		$res .= LINE_RETURN.__('For more information type help <command> or exit for quit console.').LINE_RETURN;
-		
+
 		return $res;
 	}
 }
