@@ -3,10 +3,10 @@
 abstract class Command {
 	
 	public $console = NULL;
-	
+
 	protected $_params = array();
-	
-	protected $_named = array();
+
+	protected $_map = array();
 	
 	/*
 	 * Create command object
@@ -22,16 +22,27 @@ abstract class Command {
 	*/
 	public function params($params)
 	{
+		// convert string -f param1 -a param2 into array
+		// -f => param1
+		// -a => param2
+		$last_param = NULL;
+		foreach ($params as $key=>$p)
+		{
+			if (preg_match('#-[a-z]+#i', $p))
+			{
+				$last_param = $p;
+				unset($params[$key]);
+			} else if ($last_param) {
+				$last_param = NULL;
+				unset($params[$key]);
+
+				$param = arr::get($this->_map, $last_param);
+				if ($param AND isset($this->{$param}))
+					$this->{$param} = $p;
+			}
+		}
+
 		$this->_params = $params;
-		return $this;
-	}
-	
-	/*
-	 * Set named params for the command
-	*/
-	public function named($named)
-	{
-		$this->_named = $named;
 		return $this;
 	}
 	

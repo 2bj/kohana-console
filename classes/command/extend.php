@@ -2,57 +2,45 @@
 
 class Command_Extend extends Command {
 
-	public function run($params)
+	public $_map = array(
+		'-d' => 'directory',
+	);
+
+	public $file = '';
+
+	public $directory = 'kohana';
+
+	public function run()
 	{
-		$class = strtolower(array_shift($params));
-		$parts = explode('_', $class);
-		$class_file = array_pop($parts);
-		$class_dir = implode(DIRECTORY_SEPARATOR, $parts);
-		
-		$cur_dir = $parts ? array_shift($parts) : '';
-		$directory = arr::get($params, '-d', 'kohana');
-		if ($cur_dir == $directory)
-			return 'Class already extended.';
-		
-		$file = Kohana::find_file('classes', $class_dir.'/'.$class_file);
-		
+		$this->file OR $this->file = strtolower(array_shift($this->_params));
+
+		if (empty($this->file))
+			return $this->help();
+
+		$file = Kohana::find_file('classes', $this->file);
+
 		if ( ! $file)
-			return 'Class not found';
-		
+			return __('Class not found');
+
+		$class = str_replace('/', '_', $this->file);
 		$text = file_get_contents($file);
 		$reg = "#class\s+($class).*?{\s*}#i";
-		
+
 		if ( ! preg_match($reg, $text))
 		{
-			$new_dir = preg_replace('#(classes).*#', '$1', $file).DIRECTORY_SEPARATOR.$directory;
-			$new_class = $directory.'_'.$class;
-			
+			$new_dir = dirname($file).DIRECTORY_SEPARATOR.$this->directory;
+			$new_class = str_replace('/', '_', $this->directory).'_'.$class;
+
 			$text = preg_replace("#(class\s+)($class)#i", '$1'.$new_class, $text);
-			
+
 			if ( ! is_dir($new_dir))
 				mkdir ($new_dir);
-			file_put_contents($new_dir.DIRECTORY_SEPARATOR.$class_file.EXT, $text);
-			
-			file_put_contents($file, <<<EOD
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+			file_put_contents($new_dir.DIRECTORY_SEPARATOR.basename($file), $text);
 
-class $class extends $new_class {};	
-EOD
-);
-			return 'Class extended.';
+			file_put_contents($file, View::factory('console/extend', array('class'=>$class, 'new_class'=>$new_class)));
+			return __('Class extended.');
 		}
-		
-		
-		return 'Class already extended.';
-	}
 
-	public function get_help()
-	{
-		return <<<EOD
-extend class:
-
-usage: extend <class> [-d <directory>]
-
-EOD;
+		return __('Class already extended.');
 	}
 }

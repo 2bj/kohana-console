@@ -4,25 +4,27 @@ class Command_Lite extends Command {
 	
 	protected $_errors = array();
 	protected $_load_classes = array();
-	
+
+	public $revert = NULL;
+
 	public function run($options, $named)
 	{
-		$prefix = arr::get($named, '-p', 'old');
-		
 		$index = DOCROOT.'index.php';
 		$index_old = DOCROOT.'index_'.$prefix.'.php';
-		
-		if (isset($options['-r']))
+
+		($this->revert !== NULL) OR ($this->revert = array_pop($this->_params) == '-r');
+
+		if ($this->revert)
 		{
 			if (file_exists($index_old))
 			{
 				@copy($index_old, $index);
 				@unlink($index_old);
-				
-				return 'index.php has been reverted';
+
+				return __('index.php has been reverted');
 			}
-			
-			return 'Noting revert';
+
+			return __('Noting revert');
 		} else {
 			$this->_errors = $this->_load_classes = array();
 			$classes = array(
@@ -60,14 +62,14 @@ class Command_Lite extends Command {
 				@copy($index, $index_old);
 			
 			file_put_contents ($index, $content);
-			
-			$message = "success\n";
-			
+
+			$message = __("Success").LINE_RETURN;
+
 			if ( ! empty($this->_errors))
 			{
-				$message .= "\nClasses that do not find:\n";
+				$message .= LINE_RETURN.__("Classes that do not find:").LINE_RETURN;
 				foreach ($this->_errors as $class)
-					$message .= "$class\n";
+					$message .= "$class".LINE_RETURN;
 			}
 			
 			return $message;
@@ -88,7 +90,7 @@ class Command_Lite extends Command {
 			$this->_errors[] = $class;
 			return '';
 		}
-		
+
 		$text = file_get_contents($file);
 		$content = '';
 		
@@ -98,19 +100,5 @@ class Command_Lite extends Command {
 		$content .= $text.'?>';
 		
 		return $content;
-	}
-	
-	public function help()
-	{
-		return <<<EOD
-Increase performance by compose often used classes in one file and replace index.php. Save old index.php as index_old.php. This command can be reverted using -r
-
-usage:
-lite [-r]
-
-options:
--r - revert old index.php file
-
-EOD;
 	}
 }
