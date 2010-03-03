@@ -7,7 +7,7 @@ class Command_Lite extends Command {
 
 	public $revert = NULL;
 
-	public function run($options, $named)
+	public function run()
 	{
 		$index = DOCROOT.'index.php';
 		$index_old = DOCROOT.'index_'.$prefix.'.php';

@@ -6,7 +6,7 @@ class Command_Module extends Command {
 
 	public function run()
 	{
-		$this->module OR $this->module = array_shift($params);
+		$this->module OR $this->module = array_shift($this->_params);
 
 		$directory = MODPATH.$module;
 

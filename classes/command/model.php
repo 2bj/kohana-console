@@ -8,22 +8,19 @@ class Command_Model extends Command {
 
 	public $module = '';
 
-	public function run($options)
+	public function run()
 	{
-		$this->table OR $this->table = array_shift($options);
+		$this->table OR $this->table = array_shift($this->_params);
 		if (empty($this->table))
 			return $this->help();
 
 		$class = 'Column_'.Kohana::config('database.'.$this->group.'.type');
 		$driver = new $class;
 
-		$columns = $driver->get_columns($table, $group);
-
 		$data = array(
-			'columns' => $columns,
-			'options' => $options,
-			'table' => $table,
-			'group' => $group,
+			'columns' => $driver->get_columns($table, $group),
+			'table' => $this->table,
+			'group' => $this->group,
 		);
 
 		$model_text = View::factory('console/model', $data)->render();
