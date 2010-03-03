@@ -10,40 +10,46 @@ class Controller_Console extends Controller {
 		
 		ob_end_clean();
 		
-		// print available commands
-		$commands = Console::get_commands();
-		$count = 1;
-		echo __('Available commands:')."\n";
-		foreach ($commands as $c)
-			echo $count++.'. '.$c."\n";
-		echo __('For more information type help <command> or exit for quit console.');
+		// print all commands
+		$console = Console::factory();
+		echo $console->command('help')->help();
 		
 		while (TRUE)
 		{
-			$input = trim(Console::readline());
+			$input = trim($console->readline());
 			$params = array_map('trim', explode(' ', $input));
+			$named_params = array();
 			$command_name = array_shift($params);
 			
 			// convert string -f param1 -a param2 into array
 			// -f => param1
 			// -a => param2
 			$last_param = NULL;
-			foreach ($params as $p)
+			foreach ($params as $key=>$p)
 			{
 				if (preg_match('#-[a-z]+#i', $p))
 				{
 					$last_param = $p;
-					$params[$p] = '';
+					$named_params[$p] = '';
+					unset($params[$key]);
 				} else if ($last_param) {
-					$params[$last_param] = $p;
+					$named_params[$last_param] = $p;
 					$last_param = NULL;
+					unset($params[$key]);
 				}
 			}
 			
 			if ($command_name == 'exit')
 				break;
 			
-			echo Console::run_command($command_name, $params, 'run')."\n";
+			try
+			{
+				echo $console->command($command_name)->params($params)->named($named_params)->run().LINE_RETURN;
+			}
+			catch (Exception $e)
+			{
+				echo __("Some error occured: :message in file: :file line :line", array(':message'=>$e->getMessage(), ':file'=>$e->getFile(), ':line'=>$e->getLine()));
+			}
 		}
 	}
 }

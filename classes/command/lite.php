@@ -5,9 +5,9 @@ class Command_Lite extends Command {
 	protected $_errors = array();
 	protected $_load_classes = array();
 	
-	public function run($options)
+	public function run($options, $named)
 	{
-		$prefix = arr::get($options, '-p', 'old');
+		$prefix = arr::get($named, '-p', 'old');
 		
 		$index = DOCROOT.'index.php';
 		$index_old = DOCROOT.'index_'.$prefix.'.php';

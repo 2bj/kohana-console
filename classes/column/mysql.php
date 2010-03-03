@@ -27,6 +27,7 @@ class Column_Mysql {
 			$params['empty'] = $data['is_nullable'];
 			$params['description'] = $data['comment'];
 			$params['label'] = '';
+			$params['default'] = $data['column_default'];
 			
 			// is unique key
 			foreach ($uniques as $keys)
@@ -41,9 +42,10 @@ class Column_Mysql {
 			switch ($data['type'])
 			{
 				case 'int':
-					if ($data['extra'] == 'auto_increment')
+					if ($data['extra'] == 'auto_increment') {
 						$type = 'Auto';
-					else if (arr::get($data, 'length', 0) == 1)
+						$params = array();
+					} else if (arr::get($data, 'length', 0) == 1)
 						$type = 'Boolean';
 					else if (isset($foreigns[$name])) {
 						$type = 'Belongsto';
@@ -53,9 +55,10 @@ class Column_Mysql {
 					} else if ( ! empty($data['choices'])) {
 						$type = 'Enum';
 						$params['choices'] = $data['choices'];
-					} else if (preg_match('#(created|time|updated)#', $name))
+					} else if (preg_match('#(created|time|updated)#', $name)) {
 						$type = 'Timestamp';
-					else
+						$params['default'] = 'time()',
+					} else
 						$type = 'Integer';
 					
 				break;

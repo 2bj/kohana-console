@@ -2,28 +2,27 @@
 
 class Command_Help extends Command {
 	
-	public function run($params)
+	public function run()
 	{
-		$command_name = trim(array_shift($params));
-		$result = Console::run_command($command_name, $params, 'get_help');
+		if (empty($this->_params))
+			return $this->help();
+		
+		$command_name = trim(array_shift($this->_params));
+		$result = $this->console->command($command_name)->help();
 		
 		return $result;
 	}
 	
-	public function get_help()
+	public function help()
 	{
-		$result = <<<EOD
-usage: help <command>
-
-Available commands:
-
-EOD;
-		$commands = Console::get_commands();
-
+		// print available commands
+		$commands = $this->console->commands();
 		$count = 1;
+		$res = LINE_RETURN.__('Available commands:').LINE_RETURN;
 		foreach ($commands as $c)
-			$result .= $count++.'. '.$c."\n";
-
-		return $result;
+			$res .= $count++.'. '.$c.LINE_RETURN;
+		$res .= LINE_RETURN.__('For more information type help <command> or exit for quit console.').LINE_RETURN;
+		
+		return $res;
 	}
 }
