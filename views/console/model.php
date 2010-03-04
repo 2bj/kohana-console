@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');?>
-<?="<?php defined('SYSPATH') OR die('No direct access allowed.');";?> 
+<?php echo '<?php defined(\'SYSPATH\') OR die(\'No direct access allowed.\');';?> 
 
 class Model_<?=utf8::ucfirst(inflector::singular($table))?> extends Sprig {
 
