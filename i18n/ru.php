@@ -14,6 +14,7 @@ return array(
 	'Classes that do not find:' => 'Не найденные классы:',
 	'Class not found' => 'Класс не найден',
 	'Class extended' => 'Класс расширен',
-	'Class already extended.' => 'Класс уже расширен',
-	'Class not extended.' => 'Класс не расширен',
+	'Class already extended' => 'Класс уже расширен',
+	'Class not extended' => 'Класс не расширен',
+	'Class unextended' => 'Класс был востановлен',
 );

@@ -37,8 +37,6 @@ class Command_Extend extends Command {
 				
 				$new = Kohana::find_file('classes', $new_file);
 				
-				var_dump ($new);die;
-				
 				if ( ! $new)
 					return __('Class not found');
 				
@@ -47,13 +45,16 @@ class Command_Extend extends Command {
 				$new_text = preg_replace("#(class\s+)($new_class)#i", '$1'.$class, $new_text);
 				file_put_contents($file, $new_text);
 				@unlink($new);
+				
+				return __('Class unextended');
 			}
 			
 			return __('Class not extended.');
 		} else {
 			$reg = "#class\s+($class).*?{\s*}#i";
 			if ( ! preg_match($reg, $text)) {
-				$directory = dirname($file).DIRECTORY_SEPARATOR.$this->directory;
+				$s = preg_quote(DIRECTORY_SEPARATOR);
+				$directory = dirname(preg_replace('#(.*?'.$s.')classes('.$s.'.*)#', '$1classes'.$s.$this->directory.'$2', $file));
 				$new_class = str_replace('/', '_', $this->directory).'_'.$class;
 
 				$text = preg_replace("#(class\s+)($class)#i", '$1'.$new_class, $text);
@@ -63,10 +64,10 @@ class Command_Extend extends Command {
 				file_put_contents($directory.DIRECTORY_SEPARATOR.basename($file), $text);
 
 				file_put_contents($file, View::factory('console/extend', array('class'=>$class, 'new_class'=>$new_class)));
-				return __('Class extended.');
+				return __('Class extended');
 			}
 		}
 		
-		return __('Class already extended.');
+		return __('Class already extended');
 	}
 }
