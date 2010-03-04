@@ -18,7 +18,7 @@ class Command_Model extends Command {
 		$driver = new $class;
 
 		$data = array(
-			'columns' => $driver->get_columns($table, $group),
+			'columns' => $driver->get_columns($this->table, $this->group),
 			'table' => $this->table,
 			'group' => $this->group,
 		);
@@ -33,6 +33,6 @@ class Command_Model extends Command {
 			$dir = APPPATH;
 
 		$dir = $dir.'classes'.DIRECTORY_SEPARATOR.'model';
-		echo $this->console->save_file($dir, inflector::singular($table), $model_text);
+		echo $this->console->save_file($dir, inflector::singular($this->table).EXT, $model_text);
 	}
 }

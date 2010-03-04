@@ -1,4 +1,4 @@
 <?php defined('SYSPATH') or die('No direct script access.');?>
-extend class:
+Расширяет указанный класс, т.е. берет файл и помещает его в директорию, а на его месте создает другой файл который наследует первый.
 
-usage: extend <file> [-d <directory>]
+Использование: extend <file> [-d <directory>]

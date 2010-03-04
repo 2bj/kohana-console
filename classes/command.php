@@ -32,6 +32,10 @@ abstract class Command {
 			{
 				$last_param = $p;
 				unset($params[$key]);
+
+				$param = arr::get($this->_map, $last_param);
+				if ($param AND isset($this->{$param}))
+					$this->{$param} = TRUE;
 			} else if ($last_param) {
 				$last_param = NULL;
 				unset($params[$key]);
