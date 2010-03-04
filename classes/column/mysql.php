@@ -27,7 +27,7 @@ class Column_Mysql {
 			$params['empty'] = $data['is_nullable'];
 			$params['description'] = $data['comment'];
 			$params['label'] = '';
-			$params['default'] = $data['column_default'];
+			$params['default'] = (string)$data['column_default'];
 			
 			// is unique key
 			foreach ($uniques as $keys)
@@ -57,7 +57,7 @@ class Column_Mysql {
 						$params['choices'] = $data['choices'];
 					} else if (preg_match('#(created|time|updated)#', $name)) {
 						$type = 'Timestamp';
-						$params['default'] = 'time()',
+						$params['default'] = 'time()';
 					} else
 						$type = 'Integer';
 					

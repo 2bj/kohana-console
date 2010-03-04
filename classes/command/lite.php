@@ -2,18 +2,22 @@
 
 class Command_Lite extends Command {
 	
+	protected $_map = array(
+		'-r' => 'revert',
+	);
+	
 	protected $_errors = array();
 	protected $_load_classes = array();
 
-	public $revert = NULL;
+	public $revert = FALSE;
+	
+	public $prefix = '_old';
 
 	public function run()
 	{
 		$index = DOCROOT.'index.php';
-		$index_old = DOCROOT.'index_'.$prefix.'.php';
-
-		($this->revert !== NULL) OR ($this->revert = array_pop($this->_params) == '-r');
-
+		$index_old = DOCROOT.'index'.$this->prefix.'.php';
+		
 		if ($this->revert)
 		{
 			if (file_exists($index_old))
