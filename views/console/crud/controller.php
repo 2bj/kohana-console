@@ -1,20 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 <?="<?php defined('SYSPATH') or die('No direct script access.');"?>
 
-class Controller_Admin_Content extends Controller_Admin {
+class <?=$controller?> extends <?=$parent?> {
 	public function action_index()
 	{
-		access::check_permission('module_content', 'view');
-		
-		$query = array(
-			'phrase'		=> arr::get($_GET, 'phrase', ''),
-			'visible'		=> arr::get($_GET, 'visible', 0),
-		);
-		
 		$db = DB::select();
 		
-		$content = Sprig::factory('content');
-		$count = $content->count(clone $db);
+		$<?=$model?> = Sprig::factory('<?=$content?>');
+		$count = $<?=$model?>->count(clone $db);
 		$pagination = new Pagination(array(
 			'items_per_page'	=> arr::get($_GET, 'per_page', 10),
 			'total_items'		=> $count,
@@ -22,106 +15,86 @@ class Controller_Admin_Content extends Controller_Admin {
 			'current_page'		=> array('source' => 'query_string', 'key' => 'page'),
 		));
 		
-		$contents = $content->load($db->offset($pagination->offset), $pagination->items_per_page);
+		$<?=$models?> = $<?=$model?>->load($db->offset($pagination->offset), $pagination->items_per_page);
 		
 		$data = array(
-			'contents'		=> $contents,
+			'<?=$model?>'	=> $<?=$models?>,
 			'query'			=> $query,
 		);
 		
-		$this->template->content = Theme_View::factory('content/list_pages', $data);
+		$this->template->content = Theme_View::factory('<?=$view_folder?>/<?=$view_list?>', $data);
 		$this->template->pagination = $pagination;
-		$this->template->title = 'Все страницы';
+		$this->template->title = 'Р’СЃРµ РѕР±СЉРµРєС‚С‹';
 	}
 	
 	public function action_edit($id = NULL)
 	{
-		access::check_permission('module_content', 'add_edit');
-		
-		$content = Sprig::factory('content');
+		$<?=$model?> = Sprig::factory('<?=$content?>');
 		if ($id)
 		{
-			$content->load(DB::select()->where('id', '=', $id));
+			$<?=$model?>->load(DB::select()->where('id', '=', $id));
 			
-			if ( ! $content->loaded())
+			if ( ! $<?=$model?>->loaded())
 				throw new Exception404;
 			
-			$this->template->title = 'Редактировать страницу';
+			$this->template->title = 'Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РѕР±СЉРµРєС‚';
 		} else {
-			$this->template->title = 'Добавить страницу';
+			$this->template->title = 'Р”РѕР±Р°РІРёС‚СЊ РѕР±СЉРµРєС‚';
 		}
 		
-		$form = $content->as_array();
+		$form = $<?=$model?>->as_array();
 		$errors = array();
 
 		if ($_POST)
 		{
-			$content->values($_POST);
+			$<?=$model?>->values($_POST);
 			
 			try
 			{
-				if ($content->loaded())
-					$content->update();
+				if ($<?=$model?>->loaded())
+					$<?=$model?>->update();
 				else
-					$content->create();
+					$<?=$model?>->create();
 				
-				myurl::redirect('admin/content');
+				myurl::redirect(<?=$controller_folder?>);
 			}
 			catch (Validate_Exception $e)
 			{
 				$errors = $e->array->errors('validation');
-				$form = array_merge($form, $content->as_array());
+				$form = array_merge($form, $<?=$model?>->as_array());
 			}
 		}
 		
 		$data = array(
 			'form'      => $form,
 			'errors'    => $errors,
-			'content'	=> $content,
+			'content'	=> $<?=$model?>,
 		);
 		
-		$this->template->content = Theme_View::factory('content/add_edit_content', $data);
-		$this->tpl->add_crumblink('Все страницы', 'admin/content');
+		$this->template->content = Theme_View::factory('<?=$view_folder?>/<?=$view_add_edit?>', $data);
+		$this->tpl->add_crumblink('Р’СЃРµ РѕР±СЉРµРєС‚С‹', <?=$controller_folder?>);
 	}
 
 	public function action_action()
 	{
-		$contents_ids = arr::get($_POST, 'contents_ids', array());
+		$<?=$model?>_ids = arr::get($_POST, '<?=$model?>_ids', array());
 		$action = arr::get($_POST, 'action', 'default');
 		
-		foreach ($contents_ids as $content_id)
+		foreach ($<?=$model?>_ids as $<?=$model?>_id)
 		{
-			$content = Sprig::factory('content');
-			$content->load(DB::select()->where('id', '=', $content_id));
+			$<?=$model?> = Sprig::factory('<?=$model?>');
+			$<?=$model?>->load(DB::select()->where('id', '=', $<?=$model?>_id));
 			
-			if ( ! $content->loaded())
+			if ( ! $<?=$model?>->loaded())
 				continue;
 			
 			switch ($action)
 			{
 				case 'delete':
-					access::check_permission('module_content', 'delete');
+					$title = $<?=$model?>->$<?=$object->tk()?>;
+					$<?=$model?>->delete();
 					
-					$title = $content->title;
-					$content->delete();
-					
- 					flash::set('info', 'Страница удалена - '.$title);	
-					break;
-				case 'publish':
-					access::check_permission('module_content', 'add_edit');
-					
-					$content->published = TRUE;
-					$content->update();
-					
- 					flash::set('info', 'Страница опубликована - '.$content->title);	
-					break;
-				case 'unpublish':
-					access::check_permission('module_content', 'add_edit');
-					
-					$content->published = FALSE;
-					$content->update();
-					
- 					flash::set('info', 'Страница скрыта - '.$content->title);	
+					flash::set('info', 'РћР±СЉРµРєС‚ СѓРґР°Р»РµРЅ - '.$title);	
 					break;
 			}
 		}

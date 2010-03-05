@@ -3,6 +3,10 @@
 
 class Model_<?=utf8::ucfirst(inflector::singular($table))?> extends Sprig {
 
+<?php if (isset($title_key)):?>
+	protected $_title_key = '<?=$title_key?>';
+<?php endif ?>
+
 	protected $_db = '<?=$group?>';
 
 	protected $_table = '<?=$table?>';
@@ -17,6 +21,8 @@ class Model_<?=utf8::ucfirst(inflector::singular($table))?> extends Sprig {
 				'<?=$key?>' => '<?=$value?>',
 <?php elseif (is_bool($value)):?>
 				'<?=$key?>' => <?=$value ? 'TRUE' : 'FALSE'?>,
+<?php elseif (is_array($value)):?>
+				'<?=$key?>' => <?=array_pop($value)?>,
 <?php else:?>
 				'<?=$key?>' => <?=$value?>,
 <?php endif ?>

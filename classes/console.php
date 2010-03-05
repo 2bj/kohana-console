@@ -103,6 +103,6 @@ class Console {
 		
 		file_put_contents ($dest, $text);
 		
-		return __('Create error file :file', array(':file'=>$file));
+		return __('Create file :file', array(':file'=>$file));
 	}
 }

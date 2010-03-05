@@ -57,7 +57,7 @@ class Column_Mysql {
 						$params['choices'] = $data['choices'];
 					} else if (preg_match('#(created|time|updated)#', $name)) {
 						$type = 'Timestamp';
-						$params['default'] = 'time()';
+						$params['default'] = array('time()');
 					} else
 						$type = 'Integer';
 					

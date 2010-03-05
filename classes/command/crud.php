@@ -7,6 +7,7 @@ class Command_Crud extends Command {
 	
 	protected $_map = array(
 		'-f' => 'folder',
+		'-p' => 'parent',
 	);
 	
 	public $model = '';
@@ -14,6 +15,8 @@ class Command_Crud extends Command {
 	public $folder = '';
 	
 	public $module = APPPATH;
+	
+	public $parent = 'controller_theme';
 	
 	public function run()
 	{
@@ -28,6 +31,14 @@ class Command_Crud extends Command {
 		
 		$data = array(
 			'object' => $object,
+			'controller' => utf8::ucfirst('controller_'.($this->folder ? $this->folder.'_' : '').$object),
+			'controller_folder' => 'controller'.($this->folder ? '/'.$this->folder : ''),
+			'parent' => utf8::ucfirst($this->parent),
+			'model' => $this->model,
+			'models' => $this->model.'s',
+			'view_folder' => ($this->folder ? $this->folder . '/' : '').$this->model,
+			'view_add_edit' => 'add_edit_'.$this->model,
+			'view_list' => 'list_'.$this->model,
 		);
 		
 		$controller_text = View::factory('console/crud/controller', $data)->render();
@@ -35,7 +46,7 @@ class Command_Crud extends Command {
 		$list_text = View::factory('console/crud/list', $data)->render();
 		
 		return $this->console->save_file($directory.'classes'.DIRECTORY_SEPARATOR.'controller', $this->model.EXT, $contoller_text) . LINE_RETURN .
-			$this->console->save_file($directory.'views'.DIRECTORY_SEPARATOR.($this->folder ? $this->folder . DIRECTORY_SEPARATOR : '').$this->model, 'add_edit_'.$this->model, $add_edit_text) . LINE_RETURN .
-			$this->console->save_file($directory.'views'.DIRECTORY_SEPARATOR.($this->folder ? $this->folder . DIRECTORY_SEPARATOR : '').$this->model, 'list_'.$this->model, $list_text);
+			$this->console->save_file($directory.'views'.DIRECTORY_SEPARATOR.$data['view_folder'], $data['view_add_edit'], $add_edit_text) . LINE_RETURN .
+			$this->console->save_file($directory.'views'.DIRECTORY_SEPARATOR.$data['view_folder'], $data['view_list'], $list_text);
 	}
 }

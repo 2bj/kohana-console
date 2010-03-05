@@ -17,4 +17,7 @@ return array(
 	'Class already extended' => 'Класс уже расширен',
 	'Class not extended' => 'Класс не расширен',
 	'Class unextended' => 'Класс был востановлен',
+	'File :file exists. Overwrite? (yes|no)' => 'Файл :file уже существует. Перезаписать? (yes|no)',
+	'Nothing created' => 'Файл не создан',
+	'Create file :file' => 'Создан файл :file',
 );

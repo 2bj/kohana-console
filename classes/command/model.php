@@ -22,6 +22,10 @@ class Command_Model extends Command {
 			'table' => $this->table,
 			'group' => $this->group,
 		);
+		
+		$titles = array_intersect(array('name', 'title', 'url'), array_keys($data['columns']));
+		if ( ! empty($titles) AND is_array($titles))
+			$data['title_key'] = array_shift($titles);
 
 		$model_text = View::factory('console/model', $data)->render();
 
