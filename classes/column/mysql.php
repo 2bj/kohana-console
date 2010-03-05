@@ -69,7 +69,8 @@ class Column_Mysql {
 				break;
 				
 				case 'string';
-					$params['max_length'] = (int)$data['character_maximum_length'];
+					if (isset($data['character_maximum_length']))
+						$params['max_length'] = (int)$data['character_maximum_length'];
 					switch ($data['data_type'])
 					{
 						case 'text':
