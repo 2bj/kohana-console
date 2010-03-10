@@ -51,6 +51,8 @@ class Column_Mysql {
 						$type = 'Belongsto';
 						$params['model'] = inflector::singular($foreigns[$name]['table']);
 						$params['column'] = $name;
+						$params['null'] = $params['empty'];
+						unset($params['empty']);
 						$name = $params['model'];
 					} else if ( ! empty($data['choices'])) {
 						$type = 'Enum';
