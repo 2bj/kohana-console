@@ -94,14 +94,14 @@ class Console {
 	
 	public function save_file($dir, $file, $text)
 	{
-		if ( ! is_dir($dir))
-			mkdir($dir, 644, TRUE);
-		
 		$file = str_replace('_', DIRECTORY_SEPARATOR, $file);
 		
 		$dest = $dir.DIRECTORY_SEPARATOR.$file;
 		if (is_file($dest) AND $this->dialog(__('File :file exists. Overwrite? (yes|no)', array(':file'=>$dest)), array('yes', 'no')) != 'yes')
 			return __('Nothing created');
+
+		if ( ! is_dir(dirname($dest)))
+			mkdir(dirname($dest), 644, TRUE);
 		
 		file_put_contents ($dest, $text);
 		
