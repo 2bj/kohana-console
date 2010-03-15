@@ -20,7 +20,7 @@ class Command_Error extends Command {
 		if (empty($this->model))
 			return $this->help();
 
-		$this->file OR $this->file = $model.'_error';
+		$this->file OR $this->file = $this->model.'_error';
 
 		if ($this->module)
 		{
@@ -38,6 +38,6 @@ class Command_Error extends Command {
 
 		$error_text = View::factory('console/error', $data)->render();
 
-		return $this->console->save_file($dir, $this->file, $error_text);
+		return $this->console->save_file($dir, $this->file.EXT, $error_text);
 	}
 }
