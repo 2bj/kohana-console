@@ -1,35 +1,44 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 class Controller_Console extends Controller {
-	
+
 	public function action_index()
 	{
-		// is cli?
+		// enabled console module in cli
 		if (Request::$protocol !== 'cli')
 			die('Enabled only in cli mode!');
-		
+
+		// for security: not work in production
+		if (Kohana::$environment == Kohana::PRODUCTION)
+			die('Production enabled');
+
 		ob_end_clean();
-		
-		// print all commands
-		$console = Console::factory();
-		echo $console->command('help')->help();
-		
+
+		// first of all print all commands
+		$console = Console::instance('cli');
+		$console->print_line($console->command('help')->help());
+
 		while (TRUE)
 		{
+			// read command
 			$input = trim($console->readline());
-			$params = array_map('trim', explode(' ', $input));
-			$command_name = array_shift($params);
 
-			if ($command_name == 'exit')
+			// empty command? next please
+			if (empty($input))
+				continue;
+
+			if ($input == 'exit')
 				break;
 
 			try
 			{
-				echo $console->command($command_name)->params($params)->run().LINE_RETURN;
+				$result = $console->exec($input);
+				$console->print_line($result);
 			}
 			catch (Exception $e)
 			{
-				echo __("Some error occured: :message in file: :file line :line", array(':message'=>$e->getMessage(), ':file'=>$e->getFile(), ':line'=>$e->getLine()));
+				$error_text = __("Some error occured: :message in file: :file line :line", array(':message'=>$e->getMessage(), ':file'=>$e->getFile(), ':line'=>$e->getLine()));
+				$console->print_line($error_text);
 			}
 		}
 	}

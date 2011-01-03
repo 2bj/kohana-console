@@ -1,28 +1,46 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * @author		FerumFlex <ferumflex@gmail.com>
+ */
 
 class Command_Help extends Command {
 
+	/*
+	 * @var string command name
+	*/
 	public $command = '';
 
 	public function run()
 	{
+		// get command name
 		$this->command OR $this->command = array_shift($this->_params);
 
+		// for empty params show help
 		if (empty($this->command))
 			return $this->help();
 
+		// run help
 		return $this->console->command($this->command)->help();
 	}
 
+	/*
+	 * print available commands
+	 *
+	 * @return array information about commands
+	 */
 	public function help()
 	{
-		// print available commands
-		$commands = $this->console->commands();
+		// get list of commands
+		$commands = $this->_console->commands();
+
+		// init
 		$count = 1;
-		$res = LINE_RETURN.__('Available commands:').LINE_RETURN;
+		$res = array();
+
+		$res[] = __('Available commands:');
 		foreach ($commands as $c)
-			$res .= $count++.'. '.$c.LINE_RETURN;
-		$res .= LINE_RETURN.__('For more information type help <command> or exit for quit console.').LINE_RETURN;
+			$res[] = $count++.'. '.$c;
+		$res[] = __('For more information type help <command> or exit for quit console.');
 
 		return $res;
 	}

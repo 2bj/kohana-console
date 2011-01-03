@@ -67,16 +67,18 @@ class Command_Lite extends Command {
 			
 			file_put_contents ($index, $content);
 
-			$message = __("Success").LINE_RETURN;
+
+			$result = array();
+			$result[] = __("Success");
 
 			if ( ! empty($this->_errors))
 			{
-				$message .= LINE_RETURN.__("Classes that do not find:").LINE_RETURN;
+				$result[] = __("Classes that do not find:");
 				foreach ($this->_errors as $class)
-					$message .= "$class".LINE_RETURN;
+					$result[] = $class;
 			}
-			
-			return $message;
+
+			return $result;
 		}
 	}
 	

@@ -43,25 +43,25 @@ class Column_Mysql {
 			{
 				case 'int':
 					if ($data['extra'] == 'auto_increment') {
-						$type = 'Auto';
+						$type = 'auto';
 						$params = array();
 					} else if (arr::get($data, 'length', 0) == 1)
-						$type = 'Boolean';
+						$type = 'boolean';
 					else if (isset($foreigns[$name])) {
-						$type = 'Belongsto';
+						$type = 'belongsto';
 						$params['model'] = inflector::singular($foreigns[$name]['table']);
 						$params['column'] = $name;
 						$params['null'] = $params['empty'];
 						unset($params['empty']);
 						$name = $params['model'];
 					} else if ( ! empty($data['choices'])) {
-						$type = 'Enum';
+						$type = 'enum';
 						$params['choices'] = $data['choices'];
 					} else if (preg_match('#(created|time|updated)#', $name)) {
-						$type = 'Timestamp';
+						$type = 'timestamp';
 						$params['default'] = array('time()');
 					} else
-						$type = 'Integer';
+						$type = 'integer';
 					
 				break;
 				
@@ -76,15 +76,15 @@ class Column_Mysql {
 					switch ($data['data_type'])
 					{
 						case 'text':
-							$type = 'Text';
+							$type = 'text';
 						break;
 						default:
 							if (preg_match('#(email)#', $name))
-								$type = 'Email';
+								$type = 'email';
 							elseif (preg_match('#(password)#', $name))
-								$type = 'Password';
+								$type = 'password';
 							else
-								$type = 'Char';
+								$type = 'char';
 						break;
 					}
 				

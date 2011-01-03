@@ -44,9 +44,13 @@ class Command_Crud extends Command {
 		$controller_text = View::factory('console/crud/controller', $data)->render();
 		$add_edit_text = View::factory('console/crud/add_edit', $data)->render();
 		$list_text = View::factory('console/crud/list', $data)->render();
-		
-		return $this->console->save_file($directory.'classes'.DIRECTORY_SEPARATOR.'controller', $this->model.EXT, $contoller_text) . LINE_RETURN .
-			$this->console->save_file($directory.'views'.DIRECTORY_SEPARATOR.$data['view_folder'], $data['view_add_edit'], $add_edit_text) . LINE_RETURN .
-			$this->console->save_file($directory.'views'.DIRECTORY_SEPARATOR.$data['view_folder'], $data['view_list'], $list_text);
+
+		$result = array(
+			$this->console->save_file($directory.'classes'.DIRECTORY_SEPARATOR.'controller', $this->model.EXT, $contoller_text),
+			$this->console->save_file($directory.'views'.DIRECTORY_SEPARATOR.$data['view_folder'], $data['view_add_edit'], $add_edit_text),
+			$this->console->save_file($directory.'views'.DIRECTORY_SEPARATOR.$data['view_folder'], $data['view_list'], $list_text),
+		);
+
+		return $result;
 	}
 }

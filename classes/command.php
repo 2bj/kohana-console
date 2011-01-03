@@ -1,11 +1,23 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * @author		FerumFlex <ferumflex@gmail.com>
+ */
 
 abstract class Command {
-	
-	public $console = NULL;
 
+	/*
+	 * @var Console link to the object console
+	*/
+	protected $_console = NULL;
+
+	/*
+	 * @var Array unnamed params
+	*/
 	protected $_params = array();
 
+	/*
+	 * @var Array this param define associations
+	*/
 	protected $_map = array();
 	
 	/*
@@ -14,7 +26,7 @@ abstract class Command {
 	*/
 	public function __construct($console)
 	{
-		$this->console = $console;
+		$this->_console = $console;
 	}
 	
 	/*
