@@ -1,0 +1,7 @@
+List of avaliable commands
+
+- [Error](command/error)
+- [Module](command/module)
+- [Extend](command/extend)
+- [Orm](command/orm)
+- [Lite](command/lite)

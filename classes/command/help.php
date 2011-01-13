@@ -20,7 +20,7 @@ class Command_Help extends Command {
 			return $this->help();
 
 		// run help
-		return $this->console->command($this->command)->help();
+		return $this->_console->command($this->command)->help();
 	}
 
 	/*

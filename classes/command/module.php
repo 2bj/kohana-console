@@ -2,6 +2,10 @@
 
 class Command_Module extends Command {
 
+	protected $_map = array(
+		'-m' => 'module',
+	);
+
 	public $module = '';
 
 	public function run()

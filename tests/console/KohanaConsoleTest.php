@@ -5,22 +5,6 @@
 
 class KohanaConsoleTest extends PHPUnit_Framework_TestCase {
 
-	/*
-	 * Init enronment and resources
-	*/
-	public function setUp()
-	{
-		$this->runSchema('setup.sql');
-	}
-
-	/*
-	 * Deinit environment
-	*/
-	public function teardown()
-	{
-		$this->runSchema('teardown.sql');
-	}
-
 	/**
 	 * Tests the cache static instance method
 	 */
@@ -41,17 +25,14 @@ class KohanaConsoleTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/*
-	 * Run sql script
-	 * @param string file name of sql script
+	 *
 	*/
-	public function runSchema($schema)
+	public function testModel()
 	{
-		$testDb = Kohana::config('database.test');
+		$console = Console::instance();
+		$console->exec('orm users -d sprig -g test');
 
-		if(is_null($testDb))
-			return false;
-		$command = "-u{$testDb['connection']['username']} -p{$testDb['connection']['password']} {$testDb['connection']['database']}";
-		$filePath = APPPATH . 'tests/data/' . $schema;
-		exec("mysql $command < $filePath ");
+		$model = Sprig::factory('user');
+		$this->assertObject($model);
 	}
 }

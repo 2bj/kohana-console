@@ -10,4 +10,5 @@ return array(
 	),
 	'web' => array(
 	),
+	'theme' => 'default',
 );

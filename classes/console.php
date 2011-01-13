@@ -3,38 +3,68 @@
  * @author		FerumFlex <ferumflex@gmail.com>
  */
 
-abstract class Console {
+class Console {
 
-	public static $instances = array();
-
-	public function __construct(array $config = array())
-	{
-		// copy config values to the class
-		foreach ($config as $key=>$value)
-			$this->{$key} = $value;
-	}
+	/*
+	 * @var Console Instance of the class
+	*/
+	public static $instance = NULL;
 
 	/*
 	 * Factory of the class
 	*/
-	public static function instance($type = 'cli')
+	public static function instance()
 	{
-		// Normalize to prevent duplicates
-		$type = strtolower($type);
-
-		if (empty(self::$instances[$type]))
+		if (empty(self::$instance))
 		{
-			// load configuration
-			$config = Kohana::config('console')->get($type);
-
-			//set class name
-			$class = 'Console_'.utf8::ucfirst($type);
-
 			// create a new console instance
-			self::$instances[$type] = new $class($config);
+			self::$instance = new self;
 		}
 
-		return self::$instances[$type];
+		return self::$instance;
+	}
+
+	/*
+	 * Array of the generated files
+	 * key of the array is md5 hash of the full path to the file
+	 * value is the instance of the class File_Console
+	*/
+	protected $_files = array();
+
+	/*
+	 * Function that save file
+	*/
+	public function save_file($dir, $file, $text)
+	{
+		$fullname = $dir.DIRECTORY_SEPARATOR.$file;
+		$hash = md5($fullname);
+		if ( ! isset($this->_files[$hash]))
+		{
+			$this->_files[$hash] = new File_Console($fullname, $text);
+		}
+	}
+
+	/*
+	 * Return generated files
+	 *
+	 * @return Array array of generated files
+	*/
+	public function files()
+	{
+		return $this->_files;
+	}
+
+	/*
+	 * Save all generated files
+	 *
+	 * @return Console
+	*/
+	public function save()
+	{
+		foreach ($this->_files as $hash=>$f)
+			$f->save();
+
+		return $this;
 	}
 
 	/*
@@ -99,6 +129,4 @@ abstract class Console {
 
 		return $commands;
 	}
-
-	abstract public function print_line($text, $return = TRUE);
 }

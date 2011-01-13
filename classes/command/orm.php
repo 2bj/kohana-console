@@ -8,6 +8,9 @@ class Command_Orm extends Command {
 	protected $_map = array(
 		'-g' => 'group',
 		'-m' => 'module',
+		'-d' => 'driver',
+		'-t' => 'table',
+		'-c' => 'class',
 	);
 
 	/*
@@ -21,6 +24,11 @@ class Command_Orm extends Command {
 	public $table = '';
 
 	/*
+	 * @var string name of the class
+	*/
+	public $class = '';
+
+	/*
 	 * @var string module name in which save the model
 	*/
 	public $module = '';
@@ -30,12 +38,23 @@ class Command_Orm extends Command {
 	*/
 	public $driver = 'orm';
 
+	public function params($params)
+	{
+		parent::params($params);
+
+		// get table name and class name
+		$this->table OR $this->table = array_shift($this->_params);
+
+		return $this;
+	}
+
 	public function run()
 	{
-		// Show help if no table specified
-		$this->table OR $this->table = array_shift($this->_params);
-		if (empty($this->table))
-			return $this->help();
+		// get table name and class name
+		$this->class OR $this->class = inflector::singular($this->table);
+
+		// validate params
+		$this->check();
 
 		// get driver for the current db
 		$type = Kohana::config('database.'.$this->group.'.type');
@@ -76,20 +95,50 @@ class Command_Orm extends Command {
 			'has_one' => $has_one,
 			'table' => $this->table,
 			'group' => $this->group,
+			'class' => $this->class,
 		);
 
-		$model_text = View::factory('console/orm/'.$this->driver, $data)->render();
+		$model_text = View_Console::factory('orm/'.$this->driver, $data)->render();
 
 		// define directory in which we save file
 		if ($this->module)
 		{
 			$modules = Kohana::modules();
-			$dir = $modules[$this->module].DIRECTORY_SEPARATOR;
+			$dir = $modules[$this->module];
 		} else
 			$dir = APPPATH;
 		$dir = $dir.'classes'.DIRECTORY_SEPARATOR.'model';
 
 		// save file and return result
-		echo $this->_console->save_file($dir, inflector::singular($this->table).EXT, $model_text);
+		$this->_console->save_file($dir, $this->class.EXT, $model_text);
+	}
+
+	/*
+	 * Return possible drivers for the command
+	 *
+	 * @return Array
+	*/
+	public function drivers()
+	{
+		$drivers = array(
+			'orm',
+			'hive',
+			'sprig',
+			'jelly',
+		);
+		return $drivers;
+	}
+
+	/*
+	 * Add rules to validate object
+	*/
+	public function add_rules(Validate $validate)
+	{
+		$validate->rule('group', 'Command::check_dbgroup');
+		$validate->rule('group', 'not_empty');
+		$validate->rule('module', 'Command::check_module');
+		$validate->rule('driver', 'in_array', array($this->drivers()));
+		$validate->rule('table', 'Command::check_table', array($this->group));
+		$validate->rule('table', 'not_empty');
 	}
 }
